@@ -37,13 +37,12 @@ $.fn.lazyload = function(options){
                 });
 
                 img.attr('src', $this.data('url'));
-                if (img.data('srcset') && $.fn.hidpi) {
+                if (img.data('srcset')) {
                     img.attr('srcset', img.data('srcset'));
-                    var devicePixelRatio = $.devicePixelRatio(),
-                        testImage = new Image();
+                    var testImage = new Image();
 
-                    if (devicePixelRatio > 1 && testImage.srcset === undefined) {
-                        var srcset = $img.attr('srcset'), match;
+                    if ($.fn.hidpi && $.devicePixelRatio() > 1 && testImage.srcset === undefined) {
+                        var srcset = img.attr('srcset'), match;
                         if (typeof srcset === 'string' && srcset !== '') {
                             match = $.matchSrcSet(devicePixelRatio, srcset);
                             if (match !== null) {

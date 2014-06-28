@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) { die(); }
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'Lazyload',
-	'version' => '0.2',
+	'version' => '0.2.1',
 	'author' => array( 'Mudkip' ),
 	'url' => 'https://github.com/mudkipme/mediawiki-lazyload',
 	'descriptionmsg'  => 'lazyload-desc',
@@ -22,7 +22,7 @@ $wgExtensionMessagesFiles['Lazyload'] = dirname( __FILE__ ) . '/Lazyload.i18n.ph
 
 $wgResourceModules['ext.lazyload'] = array(
 	'scripts' => array('lazyload.js' ),
-	'dependencies' => array( 'jquery', 'mediawiki' ),
+	'dependencies' => array( 'jquery', 'mediawiki', 'mediawiki.hidpi' ),
 	'localBasePath' => dirname( __FILE__ ) . '/modules',
 	'remoteExtPath' => 'Lazyload/modules'
 );
