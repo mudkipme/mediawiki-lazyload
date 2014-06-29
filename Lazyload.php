@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) { die(); }
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'Lazyload',
-	'version' => '0.2.1',
+	'version' => '0.2.2',
 	'author' => array( 'Mudkip' ),
 	'url' => 'https://github.com/mudkipme/mediawiki-lazyload',
 	'descriptionmsg'  => 'lazyload-desc',
@@ -28,11 +28,15 @@ $wgResourceModules['ext.lazyload'] = array(
 );
 
 $wgHooks['LinkerMakeExternalImage'][] = function(&$url, &$alt, &$img) {
+    global $wgRequest;
+    if (defined('MW_API') && $wgRequest->getVal('action') == 'parse') return true;
     $img = '<span class="external-image" alt="' . htmlentities($alt) . '" data-url="' . htmlentities($url) . '">&nbsp;</span>';
     return false;
 };
 
 $wgHooks['ThumbnailBeforeProduceHTML'][] = function($thumb, &$attribs, &$linkAttribs) {
+    global $wgRequest;
+    if (defined('MW_API') && $wgRequest->getVal('action') == 'parse') return true;
     $attribs['data-url'] = $attribs['src'];
     $attribs['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
     if (isset($attribs['srcset'])) {
