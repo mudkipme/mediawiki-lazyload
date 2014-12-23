@@ -30,6 +30,7 @@ $wgResourceModules['ext.lazyload'] = array(
 $wgHooks['LinkerMakeExternalImage'][] = function(&$url, &$alt, &$img) {
     global $wgRequest;
     if (defined('MW_API') && $wgRequest->getVal('action') == 'parse') return true;
+    $url = preg_replace('/^(http|https):/', '', $url);
     $img = '<span class="external-image" alt="' . htmlentities($alt) . '" data-url="' . htmlentities($url) . '">&nbsp;</span>';
     return false;
 };
