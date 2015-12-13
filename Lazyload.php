@@ -19,6 +19,7 @@ $wgExtensionCredits['other'][] = array(
 );
 
 $wgExtensionMessagesFiles['Lazyload'] = dirname( __FILE__ ) . '/Lazyload.i18n.php';
+$wgAutoloadClasses['Lazyload'] = dirname( __FILE__ ) . '/Lazyload.class.php';
 
 $wgResourceModules['ext.lazyload'] = array(
 	'scripts' => array('lazyload.js' ),
@@ -27,27 +28,6 @@ $wgResourceModules['ext.lazyload'] = array(
 	'remoteExtPath' => 'Lazyload/modules'
 );
 
-$wgHooks['LinkerMakeExternalImage'][] = function(&$url, &$alt, &$img) {
-    global $wgRequest;
-    if (defined('MW_API') && $wgRequest->getVal('action') == 'parse') return true;
-    $url = preg_replace('/^(http|https):/', '', $url);
-    $img = '<span class="external-image" alt="' . htmlentities($alt) . '" data-url="' . htmlentities($url) . '">&nbsp;</span>';
-    return false;
-};
-
-$wgHooks['ThumbnailBeforeProduceHTML'][] = function($thumb, &$attribs, &$linkAttribs) {
-    global $wgRequest;
-    if (defined('MW_API') && $wgRequest->getVal('action') == 'parse') return true;
-    $attribs['data-url'] = $attribs['src'];
-    $attribs['src'] = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-    if (isset($attribs['srcset'])) {
-        $attribs['data-srcset'] = $attribs['srcset'];
-        unset($attribs['srcset']);
-    }
-    return true;
-};
-
-$wgHooks['BeforePageDisplay'][] = function($out, $skin){
-	$out->addModules( 'ext.lazyload' );
-	return true;
-};
+$wgHooks['LinkerMakeExternalImage'][] = 'Lazyload::LinkerMakeExternalImage';
+$wgHooks['ThumbnailBeforeProduceHTML'][] = 'Lazyload::ThumbnailBeforeProduceHTML';
+$wgHooks['BeforePageDisplay'][] = 'Lazyload::BeforePageDisplay';
