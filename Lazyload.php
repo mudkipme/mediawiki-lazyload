@@ -12,7 +12,7 @@ if ( !defined( 'MEDIAWIKI' ) ) { die(); }
 $wgExtensionCredits['other'][] = array(
 	'path' => __FILE__,
 	'name' => 'Lazyload',
-	'version' => '0.2.4',
+	'version' => '0.2.5',
 	'author' => array( 'Mudkip' ),
 	'url' => 'https://github.com/mudkipme/mediawiki-lazyload',
 	'descriptionmsg'  => 'lazyload-desc',

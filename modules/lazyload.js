@@ -1,4 +1,4 @@
-$.fn.lazyload = function(options){
+$.fn.lazyload = function(options) {
 
     var opt = $.extend({
         threshold: 50,
@@ -6,19 +6,25 @@ $.fn.lazyload = function(options){
     }, options);
 
     var elements = this;
+    var timer;
 
-    function update(){
-        elements.each(function(){
-            if ($(this).is(':visible') && $(window).scrollTop() + $(window).height() > $(this).offset().top - opt.threshold) {
-                $(this).trigger('appear');
-            }
-        });
+    function update() {
+        clearTimeout(timer);
+        timer = setTimeout(function () {
+            elements.each(function () {
+                if ($(this).is(':visible') && $(this).width() > 0 && $(this).height() > 0
+                    && $(window).scrollTop() - opt.threshold < $(this).offset().top + $(this).height()
+                    && $(window).scrollTop() + $(window).height() > $(this).offset().top - opt.threshold) {
+                    $(this).trigger('appear');
+                }
+            });
+        }, 200);
     }
 
-    this.each(function(){
+    this.each(function () {
         var $this = $(this);
 
-        $this.one('appear', function(){
+        $this.one('appear', function () {
             this.loaded = true;
 
             if ($this.data('url')) {
@@ -30,7 +36,7 @@ $.fn.lazyload = function(options){
                     }
                     img.hide()[opt.effect]();
                     if ($this.hasClass('apng') && window.APNG) {
-                       APNG.ifNeeded(function() {
+                       APNG.ifNeeded(function () {
                            APNG.animateImage(img.get(0));
                        });
                     }
@@ -53,24 +59,22 @@ $.fn.lazyload = function(options){
                 }
             }
 
-            elements = $($.grep(elements, function(element){
+            elements = $($.grep(elements, function(element) {
                 return !element.loaded;
             }));
         });
     });
 
-    $(function(){
+    $(function () {
         update();
     });
 
-    $(window).on('resize scroll', function(){
+    $(window).on('resize scroll', function () {
         update();
     });
 
-    $(document).on('mouseup touchend', function(){
-        setTimeout(function(){
-            update();
-        }, 50);
+    $(document).on('mouseup touchend', function () {
+        update();
     });
 
     return this;
