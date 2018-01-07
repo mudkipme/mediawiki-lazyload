@@ -46,7 +46,7 @@ $.fn.lazyload = function(options) {
                     }
                     img.hide()[opt.effect]();
                     if ($this.hasClass('apng') && window.APNG) {
-                       APNG.ifNeeded(function () {
+                       APNG.ifNeeded().then(function () {
                            APNG.animateImage(img.get(0));
                        });
                     }

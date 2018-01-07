@@ -17,6 +17,8 @@ MediaWiki `extensions` directory, then add the following line to your
 wfLoadExtension( 'Lazyload' );
 ```
 
+If you are using the [APNG extension](https://github.com/mudkipme/mediawiki-apng) on your wiki, please upgrade it to 0.2.0 or higher.
+
 ## Configuration
 
 Lazyload extension supports dynamically replace image hosts or disable HiDPI support for certain cases in [JavaScript](https://www.mediawiki.org/wiki/Manual:Interface/JavaScript). This is particularly useful when your wiki wants to use multiple CDNs for various conditions.
