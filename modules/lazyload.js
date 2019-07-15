@@ -57,7 +57,7 @@ $.fn.lazyload = function(options) {
                     img.attr('srcset', replaceHost(img.data('srcset')));
                     var testImage = new Image();
 
-                    if ($.fn.hidpi && $.devicePixelRatio() > 1 && testImage.srcset === undefined) {
+                    if (window.devicePixelRatio > 1 && testImage.srcset === undefined) {
                         var srcset = img.attr('srcset'), match;
                         if (typeof srcset === 'string' && srcset !== '') {
                             match = $.matchSrcSet(devicePixelRatio, srcset);
