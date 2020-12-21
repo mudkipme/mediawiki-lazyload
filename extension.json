@@ -42,5 +42,6 @@
 		"BeforePageDisplay": [
 			"Lazyload::BeforePageDisplay"
 		]
-	}
+	},
+	"manifest_version": 1
 }
