@@ -77,18 +77,18 @@
 
 					// Let other extensions to handle updated content
 					mw.hook( 'wikipage.content' ).fire(
-					// images are always wrapped either into `thumb` or `p`
-					// so it's safe to pass 2nd parent chunk and
-					// to also make the MultimediaViewer happy
+						// images are always wrapped either into `thumb` or `p`
+						// so it's safe to pass 2nd parent chunk and
+						// to also make the MultimediaViewer happy
 						$( img ).parent().parent()
 					);
 				}
 
-            elements = $($.grep(elements, function(element) {
-                return !element.loaded;
-            }));
-        });
-    });
+				elements = $($.grep(elements, function(element) {
+					return !element.loaded;
+				}));
+			});
+		});
 
 		$( function () {
 			update();
@@ -105,6 +105,8 @@
 		return this;
 	};
 
-	$( '.external-image, img[data-url]' ).lazyload();
+	$( function() {
+		$( '.external-image, img[data-url]' ).lazyload();
+	});
 
 }( jQuery, mediaWiki ) );
