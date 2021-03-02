@@ -1,73 +1,88 @@
-$.fn.lazyload = function(options) {
-    var opt = $.extend({
-        threshold: 50,
-        effect: "show"
-    }, options);
+( function ( $, mw ) {
 
-    var elements = this;
-    var timer;
+	$.fn.lazyload = function ( options ) {
+		var opt = $.extend( {
+			threshold: 50,
+			effect: "show"
+		}, options );
 
-    function replaceHost(url) {
-        var host = mw.config.get('Lazyload.imageHost');
-        if (!host) {
-            return url;
-        }
-        if (host.indexOf('//') === -1) {
-            host = '//' + host;
-        }
-        return url.replace(/(https?:)?\/\/[^\s\/]+/g, host);
-    }
+		var elements = this;
+		var timer;
 
-    function update() {
-        clearTimeout(timer);
-        timer = setTimeout(function () {
-            elements.each(function () {
-                if ($(this).is(':visible') && $(this).width() > 0 && $(this).height() > 0
-                    && $(window).scrollTop() - opt.threshold < $(this).offset().top + $(this).height()
-                    && $(window).scrollTop() + $(window).height() > $(this).offset().top - opt.threshold) {
-                    $(this).trigger('appear');
-                }
-            });
-        }, 200);
-    }
+		function replaceHost( url ) {
+			var host = mw.config.get( 'Lazyload.imageHost' );
+			if ( !host ) {
+				return url;
+			}
+			if ( host.indexOf( '//' ) === -1 ) {
+				host = '//' + host;
+			}
+			return url.replace( /(https?:)?\/\/[^\s\/]+/g, host );
+		}
 
-    this.each(function () {
-        var $this = $(this);
+		function update() {
+			clearTimeout( timer );
+			timer = setTimeout( function () {
+				elements.each( function () {
+					if ( $( this ).is( ':visible' ) && $( this ).width() > 0 && $( this ).height() > 0
+						&& $( window ).scrollTop() - opt.threshold < $( this ).offset().top + $( this ).height()
+						&& $( window ).scrollTop() + $( window ).height() > $( this ).offset().top - opt.threshold ) {
+						$( this ).trigger( 'appear' );
+					}
+				} );
+			}, 200 );
+		}
 
-        $this.one('appear', function () {
-            this.loaded = true;
+		this.each( function () {
+			var $this = $( this );
 
-            if ($this.data('url')) {
-                var img = this.tagName.toUpperCase() == 'IMG' ? $this : $('<img />');
+			$this.one( 'appear', function () {
 
-                img.one('load', function(e){
-                    if ($this.prop('tagName').toUpperCase() != 'IMG') {
-                        $this.html(img);
-                    }
-                    img.hide()[opt.effect]();
-                    if ($this.hasClass('apng') && window.APNG) {
-                       APNG.ifNeeded().then(function () {
-                           APNG.animateImage(img.get(0));
-                       });
-                    }
-                });
+				if( this.loaded ) {
+					return;
+				}
 
-                img.attr('src', replaceHost($this.data('url')));
-                if (img.data('srcset') && !mw.config.get('Lazyload.disableHidpi')) {
-                    img.attr('srcset', replaceHost(img.data('srcset')));
-                    var testImage = new Image();
+				this.loaded = true;
 
-                    if (window.devicePixelRatio > 1 && testImage.srcset === undefined) {
-                        var srcset = img.attr('srcset'), match;
-                        if (typeof srcset === 'string' && srcset !== '') {
-                            match = $.matchSrcSet(devicePixelRatio, srcset);
-                            if (match !== null) {
-                                img.attr('src', match);
-                            }
-                        }
-                    }
-                }
-            }
+				if ( $this.data( 'url' ) ) {
+					var img = this.tagName.toUpperCase() == 'IMG' ? $this : $( '<img />' );
+
+					img.one( 'load', function ( e ) {
+						if ( $this.prop( 'tagName' ).toUpperCase() != 'IMG' ) {
+							$this.html( img );
+						}
+						img.hide()[ opt.effect ]();
+						if ( $this.hasClass( 'apng' ) && window.APNG ) {
+							APNG.ifNeeded().then( function () {
+								APNG.animateImage( img.get( 0 ) );
+							} );
+						}
+					} );
+
+					img.attr( 'src', replaceHost( $this.data( 'url' ) ) );
+					if ( img.data( 'srcset' ) && !mw.config.get( 'Lazyload.disableHidpi' ) ) {
+						img.attr( 'srcset', replaceHost( img.data( 'srcset' ) ) );
+						var testImage = new Image();
+
+						if ( window.devicePixelRatio > 1 && testImage.srcset === undefined ) {
+							var srcset = img.attr( 'srcset' ), match;
+							if ( typeof srcset === 'string' && srcset !== '' ) {
+								match = $.matchSrcSet( devicePixelRatio, srcset );
+								if ( match !== null ) {
+									img.attr( 'src', match );
+								}
+							}
+						}
+					}
+
+					// Let other extensions to handle updated content
+					mw.hook( 'wikipage.content' ).fire(
+					// images are always wrapped either into `thumb` or `p`
+					// so it's safe to pass 2nd parent chunk and
+					// to also make the MultimediaViewer happy
+						$( img ).parent().parent()
+					);
+				}
 
             elements = $($.grep(elements, function(element) {
                 return !element.loaded;
@@ -75,19 +90,21 @@ $.fn.lazyload = function(options) {
         });
     });
 
-    $(function () {
-        update();
-    });
+		$( function () {
+			update();
+		} );
 
-    $(window).on('resize scroll', function () {
-        update();
-    });
+		$( window ).on( 'resize scroll', function () {
+			update();
+		} );
 
-    $(document).on('mouseup touchend', function () {
-        update();
-    });
+		$( document ).on( 'mouseup touchend', function () {
+			update();
+		} );
 
-    return this;
-};
+		return this;
+	};
 
-$('.external-image, img[data-url]').lazyload();
+	$( '.external-image, img[data-url]' ).lazyload();
+
+}( jQuery, mediaWiki ) );
