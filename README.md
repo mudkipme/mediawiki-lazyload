@@ -1,6 +1,8 @@
 MediaWiki Lazyload Extension
 ============================
 
+**This extension is deprecated. Please use [$wgNativeImageLazyLoading](https://www.mediawiki.org/wiki/Manual:$wgNativeImageLazyLoading) instead.**
+
 An extension to delay loading of images on MediaWiki pages.
 
 ## Requirements
